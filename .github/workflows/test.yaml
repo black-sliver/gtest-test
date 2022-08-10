@@ -1,0 +1,75 @@
+name: Test
+
+on:
+  push:
+    paths:
+      - '**'
+      - '!**.md'
+      - '!.github/workflows/**'
+      - '.github/workflows/test.yaml'
+  pull_request:
+    paths:
+      - '**'
+      - '!**.md'
+      - '!.github/workflows/**'
+      - '.github/workflows/test.yaml'
+
+jobs:
+
+  test-ubuntu:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Install dependencies
+      run: |
+        #sudo apt-get update -y -qq  # speed up
+        sudo apt-get install coreutils build-essential googletest
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Build
+      run: make -j2
+    - name: Test
+      run: make test
+
+  test-macos:
+
+    runs-on: macos-latest
+    
+    steps:
+    - name: Install dependencies
+      run: |
+        brew install coreutils googletest
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Build
+      run: make -j2
+    - name: Test
+      run: make test
+
+  test-win64:
+
+    runs-on: windows-latest
+    
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        release: false
+        update: false  # speed up
+        install: >-
+          base-devel
+          coreutils
+          make
+          mingw-w64-x86_64-toolchain
+          mingw64/mingw-w64-x86_64-gtest
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Build
+      shell: msys2 {0}
+      run: make -j2
+    - name: Test
+      shell: msys2 {0}
+      run: make test
