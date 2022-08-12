@@ -18,23 +18,22 @@ on:
 
 jobs:
 
-# ubuntu does not ship binaries for gtest. too lazy to set it up.
-#  test-ubuntu:
-#
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#    - name: Install dependencies
-#      run: |
-#        #sudo apt-get update -y -qq  # speed up
-#        sudo apt-get install coreutils build-essential googletest
-#    - uses: actions/checkout@v2
-#      with:
-#        submodules: recursive
-#    - name: Build
-#      run: make -j2
-#    - name: Test
-#      run: make test
+  test-ubuntu:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Install dependencies
+      run: |
+        #sudo apt-get update -y -qq  # speed up
+        sudo apt-get install coreutils build-essential googletest libgtest-dev
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Build
+      run: make -j2
+    - name: Test
+      run: make test
 
   test-macos:
 
